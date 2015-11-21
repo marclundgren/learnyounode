@@ -1,8 +1,10 @@
 'use strict';
-let args = process.argv.slice(2);
+const fs = require('fs');
 
-let result = args.reduce((previousValue, currentValue) => {
-  return Number(previousValue) + Number(currentValue);
-});
+let path = process.argv[2];
+
+let bufferString = fs.readFileSync(path, 'utf8');
+
+var result = (bufferString.match(/\n/g) || []).length;
 
 console.log(result);
