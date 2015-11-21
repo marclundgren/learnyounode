@@ -1,13 +1,10 @@
 'use strict';
-const myfilter = require('./myfilter');
-const directoryName = process.argv[2];
-const fileExtension = process.argv[3];
 
-myfilter(directoryName, fileExtension, (error, data) => {
-  if (error) {
-    console.error(error);
-  }
-  data.map((item) => {
-    console.log(item);
-  });
+const http = require('http');
+
+const url = process.argv[2];
+http.get(url, (response) => {
+  response.setEncoding('utf8')
+  response.on('data', console.log);
+  response.on('error', console.error)
 });
