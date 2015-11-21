@@ -1,15 +1,13 @@
 'use strict';
-const fs = require('fs');
+const myfilter = require('./myfilter');
+const directoryName = process.argv[2];
+const fileExtension = process.argv[3];
 
-let path = process.argv[2];
-let fileExtension = process.argv[3];
-
-(function searchPathForFileExtension(path, extension) {
-  let fileNames = fs.readdir(path, (error, list) => {
-    list.forEach((item) => {
-      if (item.match(`.${fileExtension}`)) {
-        console.log(item);
-      }
-    });
+myfilter(directoryName, fileExtension, (error, data) => {
+  if (error) {
+    console.error(error);
+  }
+  data.map((item) => {
+    console.log(item);
   });
-})(path, fileExtension)
+});
