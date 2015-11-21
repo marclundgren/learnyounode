@@ -2,9 +2,14 @@
 const fs = require('fs');
 
 let path = process.argv[2];
+let fileExtension = process.argv[3];
 
-let bufferString = fs.readFileSync(path, 'utf8');
-
-var result = (bufferString.match(/\n/g) || []).length;
-
-console.log(result);
+(function searchPathForFileExtension(path, extension) {
+  let fileNames = fs.readdir(path, (error, list) => {
+    list.forEach((item) => {
+      if (item.match(`.${fileExtension}`)) {
+        console.log(item);
+      }
+    });
+  });
+})(path, fileExtension)
