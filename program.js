@@ -1,10 +1,14 @@
 'use strict';
 
+// HTTP Collection
+const concatStream = require('concat-stream');
+const url = process.argv[2];
 const http = require('http');
 
-const url = process.argv[2];
 http.get(url, (response) => {
-  response.setEncoding('utf8')
-  response.on('data', console.log);
-  response.on('error', console.error)
+  response.pipe(concatStream((data) => {
+    console.log(data.length);
+
+    console.log(data.toString());
+  }));
 });

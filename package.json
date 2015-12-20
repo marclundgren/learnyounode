@@ -1,0 +1,10 @@
+{
+  "name": "learn-node",
+  "version": "0.0.1",
+  "author": "Marc Lundgren <marclundgren2.0@gmail.com>",
+  "main": "program.js",
+  "devDependencies": {
+    "concat-stream": "^1.5.1"
+  },
+  "license": "MIT"
+}
