@@ -4,7 +4,8 @@
   "author": "Marc Lundgren <marclundgren2.0@gmail.com>",
   "main": "program.js",
   "devDependencies": {
-    "concat-stream": "^1.5.1"
+    "concat-stream": "^1.5.1",
+    "strftime": "^0.9.2"
   },
   "license": "MIT"
 }
