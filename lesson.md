@@ -1,79 +1,63 @@
 # LEARN YOU THE NODE.JS FOR MUCH WIN!
 
-## TIME SERVER (Exercise 10 of 13)
+## HTTP FILE SERVER (Exercise 11 of 13)
 
-Write a TCP time server!
+Write an HTTP server that serves the same text file for each request it
+receives.
 
-Your server should listen to TCP connections on the port provided by the
-first argument to your program. For each connection you must write the
-current date & 24 hour time in the format:
+Your server should listen on the port provided by the first argument to
+your program.
 
-   "YYYY-MM-DD hh:mm"
-
-followed by a newline character. Month, day, hour and minute must be
-zero-filled to 2 integers. For example:
-
-   "2013-07-06 17:42"
+You will be provided with the location of the file to serve as the second
+command-line argument. You must use the fs.createReadStream() method to
+stream the file contents to the response.
 
 ─────────────────────────────────────────────────────────────────────────────
 
 ## HINTS
 
-For this exercise we'll be creating a raw TCP server. There's no HTTP
-involved here so we need to use the net module from Node core which has
-all the basic networking functions.
+Because we need to create an HTTP server for this exercise rather than a
+generic TCP server, we should use the http module from Node core. Like the
+net module, http also has a method named http.createServer() but this one
+creates a server that can talk HTTP.
 
-The net module has a method named net.createServer() that takes a callback
-function. Unlike most callbacks in Node, the callback used by
-createServer() is called more than once. Every connection received by your
-server triggers another call to the callback. The callback function has
-the signature:
+http.createServer() takes a callback that is called once for each
+connection received by your server. The callback function has the
+signature:
 
-   function callback (socket) { /* ... */ }
+   function callback (request, response) { /* ... */ }
 
-net.createServer() also returns an instance of your server. You must call
+Where the two arguments are objects representing the HTTP request and the
+corresponding response for this request. request is used to fetch
+properties, such as the header and query-string from the request while
+response is for sending data to the client, both headers and body.
+
+Both request and response are also Node streams! Which means that you can
+use the streaming abstractions to send and receive data if they suit your
+use-case.
+
+http.createServer() also returns an instance of your server. You must call
 server.listen(portNumber) to start listening on a particular port.
 
-A typical Node TCP server looks like this:
+A typical Node HTTP server looks like this:
 
-   var net = require('net')
-   var server = net.createServer(function (socket) {
-     // socket handling logic
+   var http = require('http')
+   var server = http.createServer(function (req, res) {
+     // request handling logic...
    })
    server.listen(8000)
 
-Remember to use the port number supplied to you as the first command-line
-argument.
-
-The socket object contains a lot of meta-data regarding the connection,
-but it is also a Node duplex Stream, in that it can be both read from, and
-written to. For this exercise we only need to write data and then close
-the socket.
-
-Use socket.write(data) to write data to the socket and socket.end() to
-close the socket. Alternatively, the .end() method also takes a data
-object so you can simplify to just: socket.end(data).
-
-Documentation on the net module can be found by pointing your browser
+Documentation on the http module can be found by pointing your browser
 here:
-
 file:///Users/marc/.nvm/versions/node/v4.0.0/lib/node_modules/learnyounode
-/node_apidoc/net.html
+/node_apidoc/http.html
 
-To create the date, you'll need to create a custom format from a new
-Date() object. The methods that will be useful are:
-
-   date.getFullYear()
-   date.getMonth()     // starts at 0
-   date.getDate()      // returns the day of month
-   date.getHours()
-   date.getMinutes()
-
-Or, if you want to be adventurous, use the strftime package from npm. The
-strftime(fmt, date) function takes date formats just like the unix date
-command. You can read more about strftime at:
-[https://github.com/samsonjs/strftime](https://github.com/samsonjs/strftim
-e)
+The fs core module also has some streaming APIs for files. You will need
+to use the fs.createReadStream() method to create a stream representing
+the file you are given as a command-line argument. The method returns a
+stream object which you can use src.pipe(dst) to pipe the data from the
+src stream to the dst stream. In this way you can connect a filesystem
+stream with an HTTP response stream.
 
 ─────────────────────────────────────────────────────────────────────────────
 

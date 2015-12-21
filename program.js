@@ -1,13 +1,26 @@
 'use strict';
 
-// TIME SERVER
+// HTTP File Server
 
-var net = require('net');
-let strftime = require('strftime');
-let portNumber = process.argv[2];
+const http = require('http');
+const fs = require('fs');
+const portNumber = process.argv[2];
+const fileURL = process.argv[3];
 
-var server = net.createServer(function (socket) {
-  let time = strftime('%F %H:%M', new Date());
-  socket.end(time);
-});
-server.listen(portNumber);
+http.createServer((request, response) => {
+  fs.createReadStream(fileURL).pipe(response);
+}).listen(portNumber);
+
+
+/*
+  // Official Solution
+
+  let http = require('http')
+  let fs = require('fs')
+  let server = http.createServer(function (req, res) {
+    res.writeHead(200, { 'content-type': 'text/plain' })
+    fs.createReadStream(process.argv[3]).pipe(res)
+  })
+
+  server.listen(Number(process.argv[2]))
+*/
