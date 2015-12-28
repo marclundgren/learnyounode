@@ -1,60 +1,69 @@
 # LEARN YOU THE NODE.JS FOR MUCH WIN!
 
-## HTTP UPPERCASERER (Exercise 12 of 13)
+## HTTP JSON API SERVER (Exercise 13 of 13)
 
-Write an HTTP server that receives only POST requests and converts
-incoming POST body characters to upper-case and returns it to the client.
+ Write an HTTP server that serves JSON data when it receives a GET request
+ to the path '/api/parsetime'. Expect the request to contain a query string
+ with a key 'iso' and an ISO-format time as the value.
 
-Your server should listen on the port provided by the first argument to
-your program.
+ For example:
+
+ /api/parsetime?iso=2013-08-10T12:10:15.474Z
+
+ The JSON response should contain only 'hour', 'minute' and 'second'
+ properties. For example:
+
+    {
+      "hour": 14,
+      "minute": 23,
+      "second": 15
+    }
+
+ Add second endpoint for the path '/api/unixtime' which accepts the same
+ query string but returns UNIX epoch time in milliseconds (the number of
+ milliseconds since 1 Jan 1970 00:00:00 UTC) under the property 'unixtime'.
+ For example:
+
+    { "unixtime": 1376136615474 }
+
+ Your server should listen on the port provided by the first argument to
+ your program.
 
 ─────────────────────────────────────────────────────────────────────────────
 
 ## HINTS
 
-While you're not restricted to using the streaming capabilities of the
-request and response objects, it will be much easier if you do.
+ The request object from an HTTP server has a url property that you will
+ need to use to "route" your requests for the two endpoints.
 
-There are a number of different packages in npm that you can use to
-"transform" stream data as it's passing through. For this exercise the
-through2-map package offers the simplest API.
+ You can parse the URL and query string using the Node core 'url' module.
+ url.parse(request.url, true) will parse content of request.url and provide
+ you with an object with helpful properties.
 
-through2-map allows you to create a transform stream using only a single
-function that takes a chunk of data and returns a chunk of data. It's
-designed to work much like Array#map() but for streams:
+ For example, on the command prompt, type:
 
-   var map = require('through2-map')
-   inStream.pipe(map(function (chunk) {
-     return chunk.toString().split('').reverse().join('')
-   })).pipe(outStream)
+    $ node -pe "require('url').parse('/test?q=1', true)"
 
-In the above example, the incoming data from inStream is converted to a
-String (if it isn't already), the characters are reversed and the result
-is passed through to outStream. So we've made a chunk character reverser!
-Remember though that the chunk size is determined up-stream and you have
-little control over it for incoming data.
+ Documentation on the url module can be found by pointing your browser
+ here:
+ file:///Users/marc/.nvm/versions/node/v4.0.0/lib/node_modules/learnyounode
+ /node_apidoc/url.html
 
-To install through2-map type:
+ Your response should be in a JSON string format. Look at JSON.stringify()
+ for more information.
 
-   $ npm install through2-map
+ You should also be a good web citizen and set the Content-Type properly:
 
-If you don't have an Internet connection, simply make a node_modules
-directory and copy the entire directory for the module you want to use
-from inside the learnyounode installation directory:
+    res.writeHead(200, { 'Content-Type': 'application/json' })
 
-file:///Users/marc/.nvm/versions/node/v4.0.0/lib/node_modules/learnyounode
-/node_modules/through2-map
-
-Documentation for through2-map has been installed along with learnyounode
-on your system and you can read them by pointing your browser here:
-
-file:///Users/marc/.nvm/versions/node/v4.0.0/lib/node_modules/learnyounode
-/docs/through2-map.html
+ The JavaScript Date object can print dates in ISO format, e.g. new
+ Date().toISOString(). It can also parse this format if you pass the string
+ into the Date constructor. Date#getTime() will also come in handy.
 
 ─────────────────────────────────────────────────────────────────────────────
 
- » To print these instructions again, run: learnyounode print
- » To execute your program in a test environment, run: learnyounode run
-   program.js
- » To verify your program, run: learnyounode verify program.js
- » For help run: learnyounode help
+  » To print these instructions again, run: learnyounode print
+  » To execute your program in a test environment, run: learnyounode run
+    program.js
+  » To verify your program, run: learnyounode verify program.js
+  » For help run: learnyounode help
