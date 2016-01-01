@@ -3,7 +3,6 @@
 // HTTP JSON API SERVER
 
 const http = require('http');
-// const map = require('through2-map');
 const contains = require('string-contains');
 const portNumber = process.argv[2];
 const queryString = require('query-string');
@@ -11,9 +10,10 @@ const moment = require('moment');
 
 http.createServer((request, response) => {
   if (request.method === 'GET') {
-    let isUnixtime = request.url === '/api/unixtime';
-
+    let isUnixtime = contains(request.url, 'unixtime');
     let isParsetime = contains(request.url, 'parsetime');
+
+    response.writeHead(200, { 'Content-Type': 'application/json' });
 
     if (isParsetime) {
       let params = request.url.slice('/api/parsetime'.length);
@@ -27,17 +27,25 @@ http.createServer((request, response) => {
         second: convertedDate.second()
       };
 
-      response.writeHead(200, { 'Content-Type': 'application/json' });
       response.write(JSON.stringify(output));
 
       response.end();
-
     }
-    // /api/parsetime
 
     if (isUnixtime) {
       console.log('unixtime request');
+      let params = request.url.slice('/api/unixtime'.length);
+      let parsedParams = queryString.parse(params);
+      let parsedDate = parsedParams.iso;
+      let convertedDate = moment(parsedDate);
+      let output = {
+        // unixtime: convertedDate.unix()
+        unixtime: convertedDate.toDate().getTime()
+      };
+
+      response.write(JSON.stringify(output));
+
+      response.end();
     }
   }
-
 }).listen(portNumber);
